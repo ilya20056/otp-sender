@@ -7,15 +7,15 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 
-// хранилище OTP (простое, в памяти)
+// временное хранилище OTP (в памяти)
 const otpStore = new Map();
 
-// генерация кода
+// генерация 6-значного кода
 function generateOTP() {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
-// маршрут для отправки OTP
+// 📌 маршрут: отправка OTP
 app.post("/send-otp", async (req, res) => {
   const { email } = req.body;
 
@@ -24,14 +24,14 @@ app.post("/send-otp", async (req, res) => {
   }
 
   const otp = generateOTP();
-  otpStore.set(email, { otp, expires: Date.now() + 60 * 1000 }); // живёт 1 минуту
+  otpStore.set(email, { otp, expires: Date.now() + 60 * 1000 }); // 1 минута
 
   try {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+        user: process.env.yokillc992@gmail.com,
+        pass: process.env.qgerxurbrjjtiym
       },
     });
 
@@ -49,7 +49,7 @@ app.post("/send-otp", async (req, res) => {
   }
 });
 
-// маршрут для проверки OTP
+// 📌 маршрут: проверка OTP
 app.post("/verify-otp", (req, res) => {
   const { email, otp } = req.body;
 
@@ -72,8 +72,6 @@ app.post("/verify-otp", (req, res) => {
   res.json({ status: "success", message: "OTP verified" });
 });
 
-// Render сам даёт порт через process.env.PORT
+// Render даёт порт через process.env.PORT
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
